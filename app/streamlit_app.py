@@ -135,7 +135,7 @@ with st.sidebar:
     meds = list_medications_db()
     if meds:
         for med in meds:
-            st.markdown(f"""
+            st.html(f"""
             <div class="card med-card">
                 <strong>{med['name'].capitalize()}</strong> ({med['dose']})<br/>
                 <span style="font-size:0.85rem; color:#94a3b8;">
@@ -145,7 +145,7 @@ with st.sidebar:
                     {f"📝 {med['notes']}" if med['notes'] else ""}
                 </span>
             </div>
-            """, unsafe_allow_html=True)
+            """)
             
             # Remove button
             if st.button(f"🗑️ Remove {med['name'].capitalize()}", key=f"del_{med['name']}"):
@@ -160,12 +160,12 @@ with st.sidebar:
     reminders = list_reminders_db()
     if reminders:
         for rem in reminders:
-            st.markdown(f"""
+            st.html(f"""
             <div class="card reminder-card">
                 <strong>{rem['medication_name'].capitalize()}</strong><br/>
                 <span style="font-size:0.85rem; color:#94a3b8;">🕒 Scheduled for {rem['reminder_time']}</span>
             </div>
-            """, unsafe_allow_html=True)
+            """)
     else:
         st.info("No reminders scheduled yet.")
 
