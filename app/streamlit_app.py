@@ -213,47 +213,46 @@ with tab_chat:
 # 2. Add Medication Tab
 with tab_add:
     st.markdown("### Manual Medication Form")
-    with st.form("medication_form"):
-        name = st.text_input("Medication Name", placeholder="e.g., Lisinopril")
-        dose = st.text_input("Dose / Strength", placeholder="e.g., 10mg")
-        frequency = st.text_input("Frequency", placeholder="e.g., Once daily in the morning")
-        start_date = st.date_input("Start Date")
-        end_date_opt = st.checkbox("Specify End Date?")
-        end_date = st.date_input("End Date") if end_date_opt else None
-        notes = st.text_area("Additional Notes (Optional)", placeholder="Take with food, avoid grapefruit juice, etc.")
-        
-        # Reminder scheduling checkbox
-        schedule_rem = st.checkbox("Schedule daily intake reminder?")
-        rem_time = st.text_input("Reminder Time (HH:MM, 24-hr format)", value="08:00")
-        
-        submitted = st.form_submit_button("Save Medication")
-        if submitted:
-            if not name.strip() or not dose.strip() or not frequency.strip():
-                st.session_state.status_message = ("error", "Please fill in all required fields (Name, Dose, and Frequency).")
+    name = st.text_input("Medication Name", placeholder="e.g., Lisinopril")
+    dose = st.text_input("Dose / Strength", placeholder="e.g., 10mg")
+    frequency = st.text_input("Frequency", placeholder="e.g., Once daily in the morning")
+    start_date = st.date_input("Start Date")
+    end_date_opt = st.checkbox("Specify End Date?")
+    end_date = st.date_input("End Date") if end_date_opt else None
+    notes = st.text_area("Additional Notes (Optional)", placeholder="Take with food, avoid grapefruit juice, etc.")
+    
+    # Reminder scheduling checkbox
+    schedule_rem = st.checkbox("Schedule daily intake reminder?")
+    rem_time = st.text_input("Reminder Time (HH:MM, 24-hr format)", value="08:00") if schedule_rem else None
+    
+    submitted = st.button("Save Medication", key="save_med_btn")
+    if submitted:
+        if not name.strip() or not dose.strip() or not frequency.strip():
+            st.session_state.status_message = ("error", "Please fill in all required fields (Name, Dose, and Frequency).")
+            st.rerun()
+        else:
+            success = add_medication_db(
+                name=name,
+                dose=dose,
+                frequency=frequency,
+                start_date=str(start_date),
+                end_date=str(end_date) if end_date else None,
+                notes=notes
+            )
+            if success:
+                rem_msg = ""
+                if schedule_rem and rem_time:
+                    rem_success = add_reminder_db(name, rem_time)
+                    if rem_success:
+                        rem_msg = f" and reminder set at {rem_time}"
+                    else:
+                        rem_msg = " (failed to schedule reminder)"
+                        
+                st.session_state.status_message = ("success", f"Successfully saved {name.capitalize()}{rem_msg} to database!")
                 st.rerun()
             else:
-                success = add_medication_db(
-                    name=name,
-                    dose=dose,
-                    frequency=frequency,
-                    start_date=str(start_date),
-                    end_date=str(end_date) if end_date else None,
-                    notes=notes
-                )
-                if success:
-                    rem_msg = ""
-                    if schedule_rem:
-                        rem_success = add_reminder_db(name, rem_time)
-                        if rem_success:
-                            rem_msg = f" and reminder set at {rem_time}"
-                        else:
-                            rem_msg = " (failed to schedule reminder)"
-                            
-                    st.session_state.status_message = ("success", f"Successfully saved {name.capitalize()}{rem_msg} to database!")
-                    st.rerun()
-                else:
-                    st.session_state.status_message = ("error", f"Failed to save {name.capitalize()} medication details.")
-                    st.rerun()
+                st.session_state.status_message = ("error", f"Failed to save {name.capitalize()} medication details.")
+                st.rerun()
 
 # 3. Drug Interaction Checker Tab
 with tab_interactions:
