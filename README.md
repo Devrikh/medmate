@@ -81,13 +81,14 @@ medmate/
 1. **Clone the repository**:
    ```bash
    git clone <repository_url>
-   cd CapstoneProject/medmate
+   cd CapstoneProject/<repository_name>
    ```
 
 2. **Set up virtual environment**:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
+   #The latter command might need powershell administrator priviledges in Windows
    ```
 
 3. **Install dependencies**:
