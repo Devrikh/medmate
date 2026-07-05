@@ -81,8 +81,8 @@ medmate/
 1. **Clone the repository**:
    ```bash
    git clone <repository_url>
-   Rename the folder as medmate
-   cd CapstoneProject/medmate
+   #Rename the folder as medmate
+   cd medmate
    ```
 
 2. **Set up virtual environment**:
